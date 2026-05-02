@@ -40,7 +40,7 @@ func NewValidator(gormDatabase *gorm.DB) (*validator.Validate, universalTranslat
 // NewViperConfig --- Provider untuk Viper config ---
 func NewViperConfig() *viper.Viper {
 	viperConfig := viper.New()
-	viperConfig.SetConfigFile(".env")
+	viperConfig.SetConfigFile("/services/gateway/.env")
 	viperConfig.AddConfigPath(".")
 	viperConfig.AutomaticEnv()
 	if err := viperConfig.ReadInConfig(); err != nil {

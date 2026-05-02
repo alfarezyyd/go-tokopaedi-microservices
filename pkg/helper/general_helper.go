@@ -4,10 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"go-intconnect-api/internal/model"
-	"go-intconnect-api/internal/trait"
-	"go-intconnect-api/pkg/exception"
-	"go-intconnect-api/pkg/logger"
+	"go-tokopaedi-microservices/model"
+	"go-tokopaedi-microservices/pkg/exception"
+	"go-tokopaedi-microservices/pkg/logger"
 	"mime/multipart"
 	"net/http"
 	"reflect"
@@ -231,14 +230,6 @@ func NormalizeStruct(sourceStruct interface{}) map[string]interface{} {
 		return nil
 	}
 	return result
-}
-
-func ExtractIds[T trait.HasId](items []T) []uint64 {
-	ids := make([]uint64, len(items))
-	for i, item := range items {
-		ids[i] = item.GetId()
-	}
-	return ids
 }
 
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")

@@ -1,6 +1,6 @@
 package helper
 
-import "go-intconnect-api/internal/model"
+import "go-tokopaedi-microservices/model"
 
 func BuildPaginationQuery(paginationReq *model.PaginationRequest) model.PaginationQuery {
 	offset := (paginationReq.Page - 1) * paginationReq.Size

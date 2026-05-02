@@ -1,11 +1,10 @@
 package exception
 
 import (
-	"go-intconnect-api/internal/model"
+	"go-tokopaedi-microservices/model"
+	"go-tokopaedi-microservices/pkg/logger"
 	"net/http"
 	"runtime/debug"
-
-	"go-intconnect-api/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )

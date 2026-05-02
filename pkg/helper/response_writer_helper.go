@@ -1,6 +1,6 @@
 package helper
 
-import "go-intconnect-api/internal/model"
+import "go-tokopaedi-microservices/model"
 
 func WriteSuccess(message string, entry interface{}) model.ResponseContractModel {
 	return model.ResponseContractModel{

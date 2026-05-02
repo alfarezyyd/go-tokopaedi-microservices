@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"go-intconnect-api/pkg/exception"
+	"go-tokopaedi-microservices/pkg/exception"
 
 	"github.com/didip/tollbooth/v7"
 	"github.com/didip/tollbooth/v7/limiter"
