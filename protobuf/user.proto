@@ -1,0 +1,80 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/alfarezyyd/go-tokopaedi-microservices/protobuf/genproto";
+
+message CreateUserRequest {
+  string Name = 1;
+  string Email = 2;
+  string PhoneNumber = 3;
+  string Password = 4;
+  string ConfirmPassword = 5;
+}
+
+message GenerateOtpRequest {
+  uint64 UserId = 1;
+  string Email = 2;
+}
+
+message JwtClaimResponse {
+  string Email = 1;
+  string PhoneNumber = 2;
+}
+
+message LoginUserRequest {
+  string UserIdentifier = 1;
+  string Password = 2;
+}
+
+message VerifyOtpRequest {
+  string Email = 1;
+  string OneTimePasswordToken = 2;
+}
+
+message GoogleCallbackRequest {
+  string tokenState = 1;
+  string queryCode = 2;
+}
+
+message UserJwtClaim {
+  optional string Email = 1;
+  optional string PhoneNumber = 2;
+}
+
+message CommandUserResponse{
+  bool IsSuccess = 1;
+}
+
+message QueryUserResponse{
+  uint64  ID = 1;
+  string Name = 2;
+  string Email = 3;
+  string Password = 4;
+  string Role = 5;
+  string PhoneNumber = 6;
+  string ProfilePicture = 7;
+  bool  IsActive = 8;
+  string CreatedAt = 9;
+  string  UpdatedAt = 10;
+  string EmailVerifiedAt = 11;
+}
+
+message PayloadResponse {
+  string Payload = 1;
+}
+
+message UserIdentifier {
+  string Email = 1;
+  string PhoneNumber = 2;
+}
+
+
+service UserService{
+  rpc HandleRegister(CreateUserRequest) returns (CommandUserResponse);
+  rpc HandleGenerateOneTimePassword(GenerateOtpRequest) returns (google.protobuf.Empty);
+  rpc HandleLogin (LoginUserRequest) returns (PayloadResponse);
+  rpc HandleVerifyOneTimePassword(VerifyOtpRequest) returns (QueryUserResponse);
+  rpc HandleGoogleAuthentication(google.protobuf.Empty) returns (PayloadResponse);
+  rpc HandleGoogleCallback(GoogleCallbackRequest) returns (google.protobuf.Empty);
+  rpc FindByIdentifier(UserIdentifier) returns (QueryUserResponse);
+}
