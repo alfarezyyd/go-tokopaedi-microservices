@@ -2,10 +2,7 @@ package configs
 
 import (
 	"fmt"
-	"go-intconnect-api/internal/entity"
-	"go-intconnect-api/internal/model"
-	"go-intconnect-api/internal/trait"
-	"go-intconnect-api/pkg/helper"
+	"go-tokopaedi-microservices/pkg/helper"
 	"mime/multipart"
 	"regexp"
 	"strconv"
@@ -16,7 +13,6 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	engTranslation "github.com/go-playground/validator/v10/translations/en"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -44,9 +40,6 @@ func InitializeValidator(dbConnection *gorm.DB) (*validator.Validate, ut.Transla
 	validate.RegisterValidation("date", dateValidator("2006-01-02"))
 	validate.RegisterValidation("datetime", dateValidator("2006-01-02 15:04"))
 	validate.RegisterValidation("time", timeValidator("15:04"))
-	validate.RegisterValidation("matchPassword", matchPasswordValidator(dbConnection))
-	validate.RegisterStructValidation(CreateParameterRequestValidation, model.CreateParameterRequest{})
-	validate.RegisterStructValidation(UpdateParameterRequestValidation, model.UpdateParameterRequest{})
 
 	// ======================
 	// Register translations
@@ -299,82 +292,6 @@ func weakPasswordValidator(fl validator.FieldLevel) bool {
 		return false
 	}
 	return true
-}
-
-func matchPasswordValidator(dbConnection *gorm.DB) validator.Func {
-	return func(fl validator.FieldLevel) bool {
-		currentPassword := fl.Field().String()
-
-		// ambil struct req sebagai interface
-		requestModel, isValid := fl.Top().Interface().(trait.HasId)
-		if !isValid {
-			return false // struct tidak mendukung HasId
-		}
-
-		// ambil user dari DB menggunakan ID
-		var user entity.User
-		if err := dbConnection.First(&user, requestModel.GetId()).Error; err != nil {
-			return false
-		}
-
-		// compare currentPassword == actualPassword (hashed)
-		if bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(currentPassword)) != nil {
-			return false
-		}
-
-		return true
-	}
-}
-
-func CreateParameterRequestValidation(structLevel validator.StructLevel) {
-	req := structLevel.Current().Interface().(model.CreateParameterRequest)
-
-	// Jika automatic → mqtt_topic_id wajib
-	if req.IsAutomatic && req.MqttTopicId == nil {
-		structLevel.ReportError(
-			req.MqttTopicId,
-			"mqtt_topic_id",
-			"MqttTopicId",
-			"required_when_automatic",
-			"",
-		)
-	}
-
-	// Jika manual → mqtt_topic_id tidak boleh ada
-	if !req.IsAutomatic && req.MqttTopicId != nil {
-		structLevel.ReportError(
-			req.MqttTopicId,
-			"mqtt_topic_id",
-			"MqttTopicId",
-			"forbidden_when_manual",
-			"",
-		)
-	}
-}
-func UpdateParameterRequestValidation(structLevel validator.StructLevel) {
-	req := structLevel.Current().Interface().(model.UpdateParameterRequest)
-
-	// Jika automatic → mqtt_topic_id wajib
-	if req.IsAutomatic && req.MqttTopicId == nil {
-		structLevel.ReportError(
-			req.MqttTopicId,
-			"mqtt_topic_id",
-			"MqttTopicId",
-			"required_when_automatic",
-			"",
-		)
-	}
-
-	// Jika manual → mqtt_topic_id tidak boleh ada
-	if !req.IsAutomatic && req.MqttTopicId != nil {
-		structLevel.ReportError(
-			req.MqttTopicId,
-			"mqtt_topic_id",
-			"MqttTopicId",
-			"forbidden_when_manual",
-			"",
-		)
-	}
 }
 
 // ======================
