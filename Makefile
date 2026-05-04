@@ -1,26 +1,28 @@
-.PHONY: migrate-fresh
-.PHONY: migrate-up
-.PHONY: migrate-down
-PROTO_NAME=$(proto)
+.PHONY: migrate migrate-alter migrate-create migrate-down migrate-up migrate-fresh migrate-force
+ifneq (,$(wildcard services/$(SERVICE)/config.mk))
+include services/$(SERVICE)/config.mk
+export
+endif
 
 migrate-fresh:
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" down
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" up
+	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" down
+	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" up
 
 migrate-up:
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" up 1
+	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" up 1
 
 migrate:
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" up
+	migrate -path services/$(FEATURE)/migrations/ -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" up
 
 migrate-down:
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" down 1
+	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" down 1
 
 migrate-force:
-	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/go_ufis_api?sslmode=disable" force $(version)
+	migrate -path migrations -database "postgres://postgres:@127.0.0.1:5432/$(DATABASE_NAME)?sslmode=disable" force $(version)
 
 migrate-create:
-	migrate create -ext sql -dir migrations/ create_$(name)_table
+	migrate create -ext sql -dir services/$(FEATURE)/migrations/ create_$(name)_table
+
 
 migrate-alter:
 	migrate alter -ext sql -dir migrations/ alter_$(name)_table

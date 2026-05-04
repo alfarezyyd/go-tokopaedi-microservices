@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/alfarezyyd/go-tokopaedi-microservices/protobuf/genproto";
+
+// ErrorCode enum (opsional tapi sangat bagus untuk konsistensi)
+enum ErrorCode {
+  UNKNOWN = 0;
+  VALIDATION_ERROR = 1;
+  NOT_FOUND = 2;
+  UNAUTHORIZED = 3;
+  FORBIDDEN = 4;
+  CONFLICT = 5;
+  INTERNAL_ERROR = 6;
+}
+
+// Detail per-field (untuk validasi)
+message FieldViolation {
+  string field = 1;
+  string message = 2;
+}
+
+// Error utama
+message ErrorDetail {
+  ErrorCode code = 1;
+  string message = 2;
+  repeated FieldViolation violations = 3;
+}

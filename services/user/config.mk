@@ -1,0 +1,3 @@
+PROTO_NAME=user
+FEATURE=user
+DATABASE_NAME=go_tokopaedi_users
