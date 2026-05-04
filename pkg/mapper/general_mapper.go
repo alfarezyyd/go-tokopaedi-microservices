@@ -1,11 +1,8 @@
 package mapper
 
-import (
-	"go-intconnect-api/internal/entity"
-	"go-intconnect-api/internal/model"
-)
+import "go-tokopaedi-microservices/model"
 
-func FuncMapAuditable[S entity.HasAuditable, R model.HasAuditableResponse](
+func FuncMapAuditable[S model.HasAuditable, R model.HasAuditableResponse](
 	entityObject S,
 	responseObject R,
 ) {
@@ -14,7 +11,7 @@ func FuncMapAuditable[S entity.HasAuditable, R model.HasAuditableResponse](
 	)
 }
 
-func FuncMapSimpleAuditable[S entity.HasSimpleAuditable, R model.HasSimpleAuditableResponse](
+func FuncMapSimpleAuditable[S model.HasSimpleAuditable, R model.HasSimpleAuditableResponse](
 	entityObject S,
 	responseObject R,
 ) {

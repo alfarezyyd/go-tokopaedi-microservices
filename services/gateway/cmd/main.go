@@ -35,6 +35,8 @@ func main() {
 	fxContainer := fx.New(
 		// Provider
 		injector.CoreModule,
+		injector.ApplicationRoutesModule,
+		injector.UserModule,
 		// Invoker
 		fx.Invoke(Run),
 	)

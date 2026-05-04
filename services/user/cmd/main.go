@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"go-tokopaedi-microservices/configs"
+	"go-tokopaedi-microservices/pkg/validator"
+	"go-tokopaedi-microservices/protobuf/genproto"
+	"go-tokopaedi-microservices/services/user/internal"
 	"log"
 	"net"
-	"net/http"
 
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -43,18 +45,9 @@ func main() {
 	//}()
 	//defer consulServiceRegistry.Deregister(ctx, serviceId, serviceName)
 
-	mux := http.NewServeMux()
-
-	go func() {
-		log.Printf("Starting HTTP server at %s", httpAddr)
-		if err := http.ListenAndServe(httpAddr, mux); err != nil {
-			log.Fatal("failed to start http server")
-		}
-	}()
-
 	viperConfig := viper.New()
-	viperConfig.SetConfigFile(".env")
-	viperConfig.AddConfigPath(".")
+	viperConfig.SetConfigFile("./services/user/.env")
+	viperConfig.SetConfigType("env")
 	viperConfig.AutomaticEnv()
 	viperConfig.ReadInConfig()
 
@@ -72,8 +65,11 @@ func main() {
 
 	tcpListener, err := net.Listen("tcp", grpcAddr)
 	grpcServer := grpc.NewServer()
-
+	userRepository := internal.NewUserRepository()
 	validatorInstance, engTranslator := configs.InitializeValidator(databaseConnection)
+	validatorService := validator.NewService(validatorInstance, engTranslator)
+	userService := internal.NewUserServiceServer(userRepository, databaseConnection, validatorService)
+	genproto.RegisterUserServiceServer(grpcServer, &userService)
 	fmt.Println(validatorInstance, engTranslator)
 	fmt.Println("Serving gRPC server at " + grpcAddr)
 	err = grpcServer.Serve(tcpListener)

@@ -1,13 +1,12 @@
 package mapper
 
 import (
-	"go-intconnect-api/internal/entity"
-	"go-intconnect-api/internal/model"
-	"go-intconnect-api/pkg/helper"
+	"go-tokopaedi-microservices/model"
+	"go-tokopaedi-microservices/pkg/helper"
 	"time"
 )
 
-func AuditableEntityIntoEntityResponse(auditableEntity *entity.Auditable) *model.AuditableResponse {
+func AuditableEntityIntoEntityResponse(auditableEntity *model.Auditable) *model.AuditableResponse {
 	var auditableResponse model.AuditableResponse
 
 	// Format ke ISO 8601 (RFC3339)
@@ -28,7 +27,7 @@ func AuditableEntityIntoEntityResponse(auditableEntity *entity.Auditable) *model
 	return &auditableResponse
 }
 
-func SimpleAuditableEntityIntoSimpleEntityResponse(simpleAuditableEntity *entity.SimpleAuditable) *model.SimpleAuditableResponse {
+func SimpleAuditableEntityIntoSimpleEntityResponse(simpleAuditableEntity *model.SimpleAuditable) *model.SimpleAuditableResponse {
 	var simpleAuditableResponse model.SimpleAuditableResponse
 
 	// Format ke ISO 8601 (RFC3339)

@@ -1,12 +1,17 @@
 package exception
 
-import "fmt"
+import (
+	"fmt"
+
+	"google.golang.org/grpc/codes"
+)
 
 type ApplicationError struct {
 	HttpStatusCode       int                    `json:"status_code"`
 	ConventionStatusCode string                 `json:"convention_status_code"`
 	Message              string                 `json:"message"`
 	Details              map[string]interface{} `json:"details"`
+	GrpcCode             codes.Code             `json:"grpc_code"`
 }
 
 func (applicationError *ApplicationError) Error() string {
@@ -39,4 +44,25 @@ func NewApplicationErrorSpecific(statusCode int, conventionStatusCode string, me
 
 func ThrowApplicationError(applicationError *ApplicationError) {
 	panic(applicationError)
+}
+
+func mapHttpToGrpcCode(httpCode int) codes.Code {
+	switch httpCode {
+	case 400:
+		return codes.InvalidArgument
+	case 401:
+		return codes.Unauthenticated
+	case 403:
+		return codes.PermissionDenied
+	case 404:
+		return codes.NotFound
+	case 409:
+		return codes.AlreadyExists
+	case 429:
+		return codes.ResourceExhausted
+	case 504:
+		return codes.DeadlineExceeded
+	default:
+		return codes.Internal
+	}
 }

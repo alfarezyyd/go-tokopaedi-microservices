@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"go-tokopaedi-microservices/configs"
 	"go-tokopaedi-microservices/model"
 	"go-tokopaedi-microservices/pkg/exception"
 	"go-tokopaedi-microservices/pkg/helper"
@@ -14,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func AuthMiddleware(viperConfig *viper.Viper, redisConfig *configs.RedisInstance) gin.HandlerFunc {
+func AuthMiddleware(viperConfig *viper.Viper) gin.HandlerFunc {
 	return func(ginContext *gin.Context) {
 		// 1. Ambil token dari header
 		authHeader := ginContext.GetHeader("Authorization")

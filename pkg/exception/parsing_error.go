@@ -11,7 +11,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// PUBLIC FUNCTION
 func ParseGormError(err error, customMessage ...string) *ApplicationError {
 	if err == nil {
 		return nil
@@ -40,10 +39,6 @@ func ParseGormError(err error, customMessage ...string) *ApplicationError {
 	)
 }
 
-//////////////////////////////////////////////////////////////
-//               HANDLE GORM BUILT-IN ERRORS
-//////////////////////////////////////////////////////////////
-
 func parseGormBuiltinError(err error, override string) *ApplicationError {
 	type mapping struct {
 		match      error
@@ -63,6 +58,7 @@ func parseGormBuiltinError(err error, override string) *ApplicationError {
 				Message:              getMessage(override, mapElement.defaultMsg),
 				HttpStatusCode:       mapElement.statusCode,
 				ConventionStatusCode: StatusDatabaseError,
+				GrpcCode:             mapHttpToGrpcCode(mapElement.statusCode),
 			}
 		}
 	}
@@ -126,6 +122,7 @@ func parsePostgresError(pgErr *pgconn.PgError, override string) *ApplicationErro
 				ConventionStatusCode: StatusDatabaseError,
 				Message:              getMessage(override, m.generator(pgErr)),
 				Details:              nil,
+				GrpcCode:             mapHttpToGrpcCode(m.statusCode),
 			}
 		}
 	}

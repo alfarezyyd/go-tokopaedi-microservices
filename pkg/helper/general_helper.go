@@ -18,15 +18,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func CheckErrorOperation(indicatedError error, applicationError *exception.ApplicationError) bool {
-
+func CheckErrorOperation(indicatedError error, err error) bool {
 	if errors.Is(indicatedError, context.Canceled) {
-		// client aborted request → ignore / log ringan
 		return false
 	}
 	if indicatedError != nil {
 		logger.Debug(indicatedError)
-		panic(applicationError)
+		panic(err)
 		return true
 	}
 

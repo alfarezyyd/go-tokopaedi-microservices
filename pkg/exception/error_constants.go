@@ -38,7 +38,6 @@ const (
 	ErrInsufficientPermission = "Insufficient permission"
 
 	// Business Logic Errors
-	ErrInsufficientBalance = "Insufficient balance"
 	ErrInvalidOperation    = "Invalid operation"
 	ErrOperationNotAllowed = "Operation not allowed"
 	ErrQuotaExceeded       = "Quota exceeded"

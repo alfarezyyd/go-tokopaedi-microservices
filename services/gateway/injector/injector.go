@@ -1,9 +1,13 @@
 package injector
 
 import (
+	"fmt"
 	"go-tokopaedi-microservices/configs"
 	"go-tokopaedi-microservices/pkg/exception"
+	"go-tokopaedi-microservices/pkg/logger"
 	"go-tokopaedi-microservices/pkg/middleware"
+	"go-tokopaedi-microservices/services/gateway/routes"
+	"go-tokopaedi-microservices/services/gateway/user"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -12,6 +16,8 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/spf13/viper"
 	"go.uber.org/fx"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"gorm.io/gorm"
 )
 
@@ -40,13 +46,30 @@ func NewValidator(gormDatabase *gorm.DB) (*validator.Validate, universalTranslat
 // NewViperConfig --- Provider untuk Viper config ---
 func NewViperConfig() *viper.Viper {
 	viperConfig := viper.New()
-	viperConfig.SetConfigFile("/services/gateway/.env")
-	viperConfig.AddConfigPath(".")
+	viperConfig.SetConfigFile("./services/gateway/.env")
+	viperConfig.SetConfigType("env")
 	viperConfig.AutomaticEnv()
 	if err := viperConfig.ReadInConfig(); err != nil {
 		panic(err)
 	}
 	return viperConfig
+}
+
+func NewGrpcClientRegistry() *configs.GrpcClientRegistry {
+	grpcClientRegistry := configs.NewGrpcClientRegistry()
+	mapOfConnection := make(map[string]configs.GrpcConnectionClient)
+	mapOfConnection["user"] = configs.GrpcConnectionClient{
+		EndpointTarget: "localhost:10001",
+		DialOption:     grpc.WithTransportCredentials(insecure.NewCredentials()),
+	}
+
+	for serviceName, grpcConnectionClient := range mapOfConnection {
+		err := grpcClientRegistry.Connect(serviceName, grpcConnectionClient.EndpointTarget, grpcConnectionClient.DialOption)
+		if err != nil {
+			logger.Debug(fmt.Sprintf("Failed to connect to GRPC service %s", serviceName))
+		}
+	}
+	return grpcClientRegistry
 }
 
 // NewDatabaseCredentials --- Provider untuk Database Credentials ---
@@ -88,4 +111,29 @@ var CoreModule = fx.Module("coreModule", fx.Provide(
 	NewGinEngine,
 	InitRedisConfig,
 	NewRedisInstance,
+	NewGrpcClientRegistry,
 ))
+
+var ApplicationRoutesModule = fx.Module("applicationRoutes",
+	fx.Provide(
+		routes.NewPublicRoutes,
+		routes.NewAuthenticationRoutes,
+		routes.NewProtectedRoutes,
+		func(
+			ginEngine *gin.Engine,
+			publicRoutes *routes.PublicRoutes,
+			authenticationRoutes *routes.AuthenticationRoutes,
+			protectedRoutes *routes.ProtectedRoutes,
+		) *routes.ApplicationRoutes {
+			return routes.NewApplicationRoutes(ginEngine, publicRoutes, authenticationRoutes, protectedRoutes)
+		},
+	),
+	fx.Invoke(func(applicationRoutes *routes.ApplicationRoutes) {
+		applicationRoutes.Setup()
+	}),
+)
+
+var UserModule = fx.Module("userFeature",
+	fx.Provide(fx.Annotate(user.NewService, fx.As(new(user.Service)))),
+	fx.Provide(fx.Annotate(user.NewHandler, fx.As(new(user.Handler)))),
+)
