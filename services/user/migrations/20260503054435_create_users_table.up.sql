@@ -1,0 +1,13 @@
+CREATE TABLE users
+(
+    id                SERIAL PRIMARY KEY,
+    name              VARCHAR(255)        NOT NULL,
+    email             VARCHAR(255) UNIQUE NOT NULL,
+    password          VARCHAR(255)        NOT NULL,
+    phone_number      VARCHAR(255) UNIQUE NOT NULL,
+    profile_path      VARCHAR(255),
+    is_active         BOOLEAN             NOT NULL DEFAULT TRUE,
+    created_at        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    email_verified_at TIMESTAMP
+)
