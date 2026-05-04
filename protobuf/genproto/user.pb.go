@@ -460,7 +460,6 @@ type QueryUserResponse struct {
 	Name            string                 `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
 	Email           string                 `protobuf:"bytes,3,opt,name=Email,proto3" json:"Email,omitempty"`
 	Password        string                 `protobuf:"bytes,4,opt,name=Password,proto3" json:"Password,omitempty"`
-	Role            string                 `protobuf:"bytes,5,opt,name=Role,proto3" json:"Role,omitempty"`
 	PhoneNumber     string                 `protobuf:"bytes,6,opt,name=PhoneNumber,proto3" json:"PhoneNumber,omitempty"`
 	ProfilePicture  string                 `protobuf:"bytes,7,opt,name=ProfilePicture,proto3" json:"ProfilePicture,omitempty"`
 	IsActive        bool                   `protobuf:"varint,8,opt,name=IsActive,proto3" json:"IsActive,omitempty"`
@@ -529,13 +528,6 @@ func (x *QueryUserResponse) GetPassword() string {
 	return ""
 }
 
-func (x *QueryUserResponse) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
-}
-
 func (x *QueryUserResponse) GetPhoneNumber() string {
 	if x != nil {
 		return x.PhoneNumber
@@ -578,6 +570,50 @@ func (x *QueryUserResponse) GetEmailVerifiedAt() string {
 	return ""
 }
 
+type QueryUserResponses struct {
+	state              protoimpl.MessageState `protogen:"open.v1"`
+	QueryUserResponses []*QueryUserResponse   `protobuf:"bytes,1,rep,name=queryUserResponses,proto3" json:"queryUserResponses,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
+}
+
+func (x *QueryUserResponses) Reset() {
+	*x = QueryUserResponses{}
+	mi := &file_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryUserResponses) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryUserResponses) ProtoMessage() {}
+
+func (x *QueryUserResponses) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryUserResponses.ProtoReflect.Descriptor instead.
+func (*QueryUserResponses) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *QueryUserResponses) GetQueryUserResponses() []*QueryUserResponse {
+	if x != nil {
+		return x.QueryUserResponses
+	}
+	return nil
+}
+
 type PayloadResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Payload       string                 `protobuf:"bytes,1,opt,name=Payload,proto3" json:"Payload,omitempty"`
@@ -587,7 +623,7 @@ type PayloadResponse struct {
 
 func (x *PayloadResponse) Reset() {
 	*x = PayloadResponse{}
-	mi := &file_user_proto_msgTypes[9]
+	mi := &file_user_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -599,7 +635,7 @@ func (x *PayloadResponse) String() string {
 func (*PayloadResponse) ProtoMessage() {}
 
 func (x *PayloadResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[9]
+	mi := &file_user_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -612,7 +648,7 @@ func (x *PayloadResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PayloadResponse.ProtoReflect.Descriptor instead.
 func (*PayloadResponse) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{9}
+	return file_user_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *PayloadResponse) GetPayload() string {
@@ -632,7 +668,7 @@ type UserIdentifier struct {
 
 func (x *UserIdentifier) Reset() {
 	*x = UserIdentifier{}
-	mi := &file_user_proto_msgTypes[10]
+	mi := &file_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -644,7 +680,7 @@ func (x *UserIdentifier) String() string {
 func (*UserIdentifier) ProtoMessage() {}
 
 func (x *UserIdentifier) ProtoReflect() protoreflect.Message {
-	mi := &file_user_proto_msgTypes[10]
+	mi := &file_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -657,7 +693,7 @@ func (x *UserIdentifier) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserIdentifier.ProtoReflect.Descriptor instead.
 func (*UserIdentifier) Descriptor() ([]byte, []int) {
-	return file_user_proto_rawDescGZIP(), []int{10}
+	return file_user_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UserIdentifier) GetEmail() string {
@@ -709,27 +745,29 @@ const file_user_proto_rawDesc = "" +
 	"\x06_EmailB\x0e\n" +
 	"\f_PhoneNumber\"3\n" +
 	"\x13CommandUserResponse\x12\x1c\n" +
-	"\tIsSuccess\x18\x01 \x01(\bR\tIsSuccess\"\xc9\x02\n" +
+	"\tIsSuccess\x18\x01 \x01(\bR\tIsSuccess\"\xb5\x02\n" +
 	"\x11QueryUserResponse\x12\x0e\n" +
 	"\x02ID\x18\x01 \x01(\x04R\x02ID\x12\x12\n" +
 	"\x04Name\x18\x02 \x01(\tR\x04Name\x12\x14\n" +
 	"\x05Email\x18\x03 \x01(\tR\x05Email\x12\x1a\n" +
-	"\bPassword\x18\x04 \x01(\tR\bPassword\x12\x12\n" +
-	"\x04Role\x18\x05 \x01(\tR\x04Role\x12 \n" +
+	"\bPassword\x18\x04 \x01(\tR\bPassword\x12 \n" +
 	"\vPhoneNumber\x18\x06 \x01(\tR\vPhoneNumber\x12&\n" +
 	"\x0eProfilePicture\x18\a \x01(\tR\x0eProfilePicture\x12\x1a\n" +
 	"\bIsActive\x18\b \x01(\bR\bIsActive\x12\x1c\n" +
 	"\tCreatedAt\x18\t \x01(\tR\tCreatedAt\x12\x1c\n" +
 	"\tUpdatedAt\x18\n" +
 	" \x01(\tR\tUpdatedAt\x12(\n" +
-	"\x0fEmailVerifiedAt\x18\v \x01(\tR\x0fEmailVerifiedAt\"+\n" +
+	"\x0fEmailVerifiedAt\x18\v \x01(\tR\x0fEmailVerifiedAt\"X\n" +
+	"\x12QueryUserResponses\x12B\n" +
+	"\x12queryUserResponses\x18\x01 \x03(\v2\x12.QueryUserResponseR\x12queryUserResponses\"+\n" +
 	"\x0fPayloadResponse\x12\x18\n" +
 	"\aPayload\x18\x01 \x01(\tR\aPayload\"H\n" +
 	"\x0eUserIdentifier\x12\x14\n" +
 	"\x05Email\x18\x01 \x01(\tR\x05Email\x12 \n" +
-	"\vPhoneNumber\x18\x02 \x01(\tR\vPhoneNumber2\xda\x03\n" +
-	"\vUserService\x12:\n" +
-	"\x0eHandleRegister\x12\x12.CreateUserRequest\x1a\x14.CommandUserResponse\x12L\n" +
+	"\vPhoneNumber\x18\x02 \x01(\tR\vPhoneNumber2\x94\x04\n" +
+	"\vUserService\x126\n" +
+	"\aFindAll\x12\x16.google.protobuf.Empty\x1a\x13.QueryUserResponses\x12<\n" +
+	"\x0eHandleRegister\x12\x12.CreateUserRequest\x1a\x16.google.protobuf.Empty\x12L\n" +
 	"\x1dHandleGenerateOneTimePassword\x12\x13.GenerateOtpRequest\x1a\x16.google.protobuf.Empty\x122\n" +
 	"\vHandleLogin\x12\x11.LoginUserRequest\x1a\x10.PayloadResponse\x12D\n" +
 	"\x1bHandleVerifyOneTimePassword\x12\x11.VerifyOtpRequest\x1a\x12.QueryUserResponse\x12F\n" +
@@ -749,7 +787,7 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_user_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),     // 0: CreateUserRequest
 	(*GenerateOtpRequest)(nil),    // 1: GenerateOtpRequest
@@ -760,30 +798,34 @@ var file_user_proto_goTypes = []any{
 	(*UserJwtClaim)(nil),          // 6: UserJwtClaim
 	(*CommandUserResponse)(nil),   // 7: CommandUserResponse
 	(*QueryUserResponse)(nil),     // 8: QueryUserResponse
-	(*PayloadResponse)(nil),       // 9: PayloadResponse
-	(*UserIdentifier)(nil),        // 10: UserIdentifier
-	(*emptypb.Empty)(nil),         // 11: google.protobuf.Empty
+	(*QueryUserResponses)(nil),    // 9: QueryUserResponses
+	(*PayloadResponse)(nil),       // 10: PayloadResponse
+	(*UserIdentifier)(nil),        // 11: UserIdentifier
+	(*emptypb.Empty)(nil),         // 12: google.protobuf.Empty
 }
 var file_user_proto_depIdxs = []int32{
-	0,  // 0: UserService.HandleRegister:input_type -> CreateUserRequest
-	1,  // 1: UserService.HandleGenerateOneTimePassword:input_type -> GenerateOtpRequest
-	3,  // 2: UserService.HandleLogin:input_type -> LoginUserRequest
-	4,  // 3: UserService.HandleVerifyOneTimePassword:input_type -> VerifyOtpRequest
-	11, // 4: UserService.HandleGoogleAuthentication:input_type -> google.protobuf.Empty
-	5,  // 5: UserService.HandleGoogleCallback:input_type -> GoogleCallbackRequest
-	10, // 6: UserService.FindByIdentifier:input_type -> UserIdentifier
-	7,  // 7: UserService.HandleRegister:output_type -> CommandUserResponse
-	11, // 8: UserService.HandleGenerateOneTimePassword:output_type -> google.protobuf.Empty
-	9,  // 9: UserService.HandleLogin:output_type -> PayloadResponse
-	8,  // 10: UserService.HandleVerifyOneTimePassword:output_type -> QueryUserResponse
-	9,  // 11: UserService.HandleGoogleAuthentication:output_type -> PayloadResponse
-	11, // 12: UserService.HandleGoogleCallback:output_type -> google.protobuf.Empty
-	8,  // 13: UserService.FindByIdentifier:output_type -> QueryUserResponse
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
-	0,  // [0:0] is the sub-list for extension type_name
-	0,  // [0:0] is the sub-list for extension extendee
-	0,  // [0:0] is the sub-list for field type_name
+	8,  // 0: QueryUserResponses.queryUserResponses:type_name -> QueryUserResponse
+	12, // 1: UserService.FindAll:input_type -> google.protobuf.Empty
+	0,  // 2: UserService.HandleRegister:input_type -> CreateUserRequest
+	1,  // 3: UserService.HandleGenerateOneTimePassword:input_type -> GenerateOtpRequest
+	3,  // 4: UserService.HandleLogin:input_type -> LoginUserRequest
+	4,  // 5: UserService.HandleVerifyOneTimePassword:input_type -> VerifyOtpRequest
+	12, // 6: UserService.HandleGoogleAuthentication:input_type -> google.protobuf.Empty
+	5,  // 7: UserService.HandleGoogleCallback:input_type -> GoogleCallbackRequest
+	11, // 8: UserService.FindByIdentifier:input_type -> UserIdentifier
+	9,  // 9: UserService.FindAll:output_type -> QueryUserResponses
+	12, // 10: UserService.HandleRegister:output_type -> google.protobuf.Empty
+	12, // 11: UserService.HandleGenerateOneTimePassword:output_type -> google.protobuf.Empty
+	10, // 12: UserService.HandleLogin:output_type -> PayloadResponse
+	8,  // 13: UserService.HandleVerifyOneTimePassword:output_type -> QueryUserResponse
+	10, // 14: UserService.HandleGoogleAuthentication:output_type -> PayloadResponse
+	12, // 15: UserService.HandleGoogleCallback:output_type -> google.protobuf.Empty
+	8,  // 16: UserService.FindByIdentifier:output_type -> QueryUserResponse
+	9,  // [9:17] is the sub-list for method output_type
+	1,  // [1:9] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
@@ -798,7 +840,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   11,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

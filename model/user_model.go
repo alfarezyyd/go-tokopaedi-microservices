@@ -24,13 +24,11 @@ type UserResponse struct {
 }
 
 type CreateUserRequest struct {
-	Username     string `json:"username" validate:"required,min=3,max=100,unique=users;username"`
-	Name         string `json:"name" validate:"required,min=3,max=100"`
-	Email        string `json:"email" validate:"required,email,min=3,max=100,unique=users;email"`
-	Password     string `json:"password" validate:"required,min=3,max=100,weakPassword"`
-	RoleId       uint64 `json:"role_id" validate:"required,gte=0"`
-	DepartmentId uint64 `json:"department_id" validate:"required,gte=0,exists=departments;id"`
-	EmployeeId   string `json:"employee_id" validate:"required,gte=0,unique=users;employee_id"`
+	Name            string `json:"name" validate:"required,min=3,max=100"`
+	Email           string `json:"email" validate:"required,email,min=3,max=100,unique=users;email"`
+	PhoneNumber     string `json:"phone_number" validate:"required,number,min=11,max=11"`
+	Password        string `json:"password" validate:"required"`
+	ConfirmPassword string `json:"confirm_password" validate:"required"`
 }
 
 type UpdateUserRequest struct {

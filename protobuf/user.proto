@@ -50,13 +50,16 @@ message QueryUserResponse{
   string Name = 2;
   string Email = 3;
   string Password = 4;
-  string Role = 5;
   string PhoneNumber = 6;
   string ProfilePicture = 7;
   bool  IsActive = 8;
   string CreatedAt = 9;
   string  UpdatedAt = 10;
   string EmailVerifiedAt = 11;
+}
+
+message QueryUserResponses {
+  repeated QueryUserResponse queryUserResponses = 1;
 }
 
 message PayloadResponse {
@@ -70,7 +73,8 @@ message UserIdentifier {
 
 
 service UserService{
-  rpc HandleRegister(CreateUserRequest) returns (CommandUserResponse);
+  rpc FindAll(google.protobuf.Empty) returns (QueryUserResponses);
+  rpc HandleRegister(CreateUserRequest) returns (google.protobuf.Empty);
   rpc HandleGenerateOneTimePassword(GenerateOtpRequest) returns (google.protobuf.Empty);
   rpc HandleLogin (LoginUserRequest) returns (PayloadResponse);
   rpc HandleVerifyOneTimePassword(VerifyOtpRequest) returns (QueryUserResponse);

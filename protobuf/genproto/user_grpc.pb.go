@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	UserService_FindAll_FullMethodName                       = "/UserService/FindAll"
 	UserService_HandleRegister_FullMethodName                = "/UserService/HandleRegister"
 	UserService_HandleGenerateOneTimePassword_FullMethodName = "/UserService/HandleGenerateOneTimePassword"
 	UserService_HandleLogin_FullMethodName                   = "/UserService/HandleLogin"
@@ -33,7 +34,8 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	HandleRegister(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CommandUserResponse, error)
+	FindAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*QueryUserResponses, error)
+	HandleRegister(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	HandleGenerateOneTimePassword(ctx context.Context, in *GenerateOtpRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	HandleLogin(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*PayloadResponse, error)
 	HandleVerifyOneTimePassword(ctx context.Context, in *VerifyOtpRequest, opts ...grpc.CallOption) (*QueryUserResponse, error)
@@ -50,9 +52,19 @@ func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
 }
 
-func (c *userServiceClient) HandleRegister(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CommandUserResponse, error) {
+func (c *userServiceClient) FindAll(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*QueryUserResponses, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CommandUserResponse)
+	out := new(QueryUserResponses)
+	err := c.cc.Invoke(ctx, UserService_FindAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) HandleRegister(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, UserService_HandleRegister_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -124,7 +136,8 @@ func (c *userServiceClient) FindByIdentifier(ctx context.Context, in *UserIdenti
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
-	HandleRegister(context.Context, *CreateUserRequest) (*CommandUserResponse, error)
+	FindAll(context.Context, *emptypb.Empty) (*QueryUserResponses, error)
+	HandleRegister(context.Context, *CreateUserRequest) (*emptypb.Empty, error)
 	HandleGenerateOneTimePassword(context.Context, *GenerateOtpRequest) (*emptypb.Empty, error)
 	HandleLogin(context.Context, *LoginUserRequest) (*PayloadResponse, error)
 	HandleVerifyOneTimePassword(context.Context, *VerifyOtpRequest) (*QueryUserResponse, error)
@@ -141,7 +154,10 @@ type UserServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserServiceServer struct{}
 
-func (UnimplementedUserServiceServer) HandleRegister(context.Context, *CreateUserRequest) (*CommandUserResponse, error) {
+func (UnimplementedUserServiceServer) FindAll(context.Context, *emptypb.Empty) (*QueryUserResponses, error) {
+	return nil, status.Error(codes.Unimplemented, "method FindAll not implemented")
+}
+func (UnimplementedUserServiceServer) HandleRegister(context.Context, *CreateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method HandleRegister not implemented")
 }
 func (UnimplementedUserServiceServer) HandleGenerateOneTimePassword(context.Context, *GenerateOtpRequest) (*emptypb.Empty, error) {
@@ -181,6 +197,24 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&UserService_ServiceDesc, srv)
+}
+
+func _UserService_FindAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).FindAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_FindAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).FindAll(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_HandleRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -316,6 +350,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "UserService",
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FindAll",
+			Handler:    _UserService_FindAll_Handler,
+		},
 		{
 			MethodName: "HandleRegister",
 			Handler:    _UserService_HandleRegister_Handler,
